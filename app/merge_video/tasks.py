@@ -2,7 +2,8 @@ import subprocess
 import os
 import logging
 from celery import shared_task
-from .schemas import AudioSource
+from app.merge_video.schemas import AudioSource
+
 
 @shared_task(name="process_videos")
 def process_videos(video1_path: str, video2_path: str, audio_from: AudioSource, timestamp: str):
@@ -50,6 +51,7 @@ def process_videos(video1_path: str, video2_path: str, audio_from: AudioSource, 
     except subprocess.CalledProcessError as e:
         logging.error(f"Error during video processing: {str(e)}")
         raise Exception("Video processing failed")
+
 
 def send_completion_notification(output_path):
     # Implement your notification logic here
