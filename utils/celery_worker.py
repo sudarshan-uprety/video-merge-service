@@ -6,7 +6,7 @@ redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
 celery = Celery('tasks', broker=redis_url)
 
 # Import the tasks module to ensure all tasks are registered
-from app import tasks
+from app.merge_video import tasks
 
 # Optional: Configure Celery
 celery.conf.update(
