@@ -1,14 +1,18 @@
 import os
+import sys
+
 from celery import Celery
 
-# Create a Celery instance with the Redis URL from environment variables
-redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
-celery = Celery('tasks', broker=redis_url)
+from utils.variables import REDIS_URL
 
-# Import the tasks module to ensure all tasks are registered
-from app.merge_video import tasks
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, project_root)
 
-# Optional: Configure Celery
+print('hey'*100)
+print(REDIS_URL)
+celery = Celery('tasks', broker=REDIS_URL)
+
+
 celery.conf.update(
     task_serializer='json',
     accept_content=['json'],
@@ -16,3 +20,5 @@ celery.conf.update(
     timezone='UTC',
     enable_utc=True,
 )
+
+celery.autodiscover_tasks(['app.merge_video'])

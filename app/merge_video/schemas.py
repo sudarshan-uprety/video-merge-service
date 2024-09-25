@@ -17,13 +17,5 @@ class VideoProcessingRequest(BaseModel):
 
 
 class VideoProcessingResponse(BaseModel):
-    instagram_tiktok_facebook_video: str
-    youtube_reels_video: str
-
-
-class VideoProcessingStatus(BaseModel):
-    task_id: str
-    status: str
-    output_path: Optional[str] = None
-    error: Optional[str] = None
-
+    status: bool
+    message: str

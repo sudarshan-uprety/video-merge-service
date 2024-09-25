@@ -1,11 +1,8 @@
 from fastapi import APIRouter, File
 
-from celery.result import AsyncResult
-
-from app.merge_video.schemas import VideoProcessingRequest, VideoProcessingStatus
+from app.merge_video.schemas import VideoProcessingRequest, VideoProcessingResponse
 from app.merge_video.tasks import process_videos
 from utils.folders import get_nepal_time, create_output_dirs
-from utils.celery_worker import celery
 
 
 router = APIRouter(
@@ -14,7 +11,7 @@ router = APIRouter(
 )
 
 
-@router.post("/video/", response_model=VideoProcessingStatus)
+@router.post("/video/", response_model=VideoProcessingResponse)
 async def merge_and_convert_videos(request: VideoProcessingRequest = File(...)):
     timestamp = get_nepal_time().strftime("%Y-%m-%d-%H-%M")
     cache_dir = "/app/cache_video/"
@@ -34,28 +31,26 @@ async def merge_and_convert_videos(request: VideoProcessingRequest = File(...)):
     # Start the Celery task
     task = process_videos.delay(video1_path, video2_path, request.audio_from, timestamp)
 
-    return VideoProcessingStatus(task_id=task.id, status="Processing")
-
-@router.get("/video_status/{task_id}", response_model=VideoProcessingStatus)
-async def get_video_status(task_id: str):
-    task_result = AsyncResult(task_id, app=celery)
-    if task_result.ready():
-        if task_result.successful():
-            return VideoProcessingStatus(
-                task_id=task_id,
-                status="Completed",
-                output_path=task_result.result
-            )
-        else:
-            return VideoProcessingStatus(
-                task_id=task_id,
-                status="Failed",
-                error=str(task_result.result)
-            )
-    else:
-        return VideoProcessingStatus(task_id=task_id, status="Processing")
+    return VideoProcessingResponse(message="Processing completed", status=True)
 
 
-@round.get("/")
-def read_root():
-    return {"message": "Video merging API is running"}
+# @router.get("/video_status/{task_id}", response_model=VideoProcessingStatus)
+# async def get_video_status(task_id: str):
+#     task_result = AsyncResult(task_id, app=celery)
+#     if task_result.ready():
+#         if task_result.successful():
+#             return VideoProcessingStatus(
+#                 task_id=task_id,
+#                 status="Completed",
+#                 output_path=task_result.result
+#             )
+#         else:
+#             return VideoProcessingStatus(
+#                 task_id=task_id,
+#                 status="Failed",
+#                 error=str(task_result.result)
+#             )
+#     else:
+#         return VideoProcessingStatus(task_id=task_id, status="Processing")
+
+
