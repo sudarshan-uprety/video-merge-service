@@ -55,4 +55,5 @@ def process_videos(video1_path: str, video2_path: str, audio_from: AudioSource, 
 
 def send_completion_notification(output_path):
     # Implement your notification logic here
+    print('done merging', output_path)
     logging.info(f"Video processing completed. Output: {output_path}")
