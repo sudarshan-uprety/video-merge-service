@@ -5,3 +5,4 @@ pytz
 celery
 redis
 python-dotenv
+boto3
