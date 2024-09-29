@@ -15,4 +15,3 @@ def upload_to_s3(file_location):
             Bucket=S3Bucket,
             Key=file_location
         )
-

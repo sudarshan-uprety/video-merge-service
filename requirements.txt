@@ -6,3 +6,7 @@ celery
 redis
 python-dotenv
 boto3
+google-api-python-client
+httpx
+oauth2client
+google-auth-oauthlib

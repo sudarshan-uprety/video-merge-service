@@ -3,7 +3,7 @@ import os
 import logging
 from celery import shared_task
 from app.merge_video.schemas import AudioSource
-
+from app.publish import youtube
 
 @shared_task(name="process_videos")
 def process_videos(video1_path: str, video2_path: str, audio_from: AudioSource, timestamp: str):
@@ -56,4 +56,5 @@ def process_videos(video1_path: str, video2_path: str, audio_from: AudioSource, 
 def send_completion_notification(output_path):
     # Implement your notification logic here
     print('done merging', output_path)
+    youtube.upload_video(video_file=output_path, title='new title', description='heyyy', keywords='new, 123', category='22', privacy_status='public')
     logging.info(f"Video processing completed. Output: {output_path}")

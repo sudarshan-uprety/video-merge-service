@@ -4,7 +4,6 @@ FROM python:3.9-slim
 # Install FFmpeg and other necessary packages
 RUN apt-get update && apt-get install -y ffmpeg
 
-
 # Set the working directory to /app
 WORKDIR /app
 
